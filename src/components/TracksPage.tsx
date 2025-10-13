@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase, Track, Category } from '../lib/supabase';
+import { Track, Category, getTracks, getCategories } from '../lib/api';
 import { Clock, Search, Filter } from 'lucide-react';
 
 interface TracksPageProps {
@@ -23,24 +23,22 @@ export default function TracksPage({ onNavigate, selectedCategory }: TracksPageP
 
   const loadData = async () => {
     setLoading(true);
-    let query = supabase.from('tracks').select('*').order('track_number');
+    try {
+      const [tracksData, categoriesData] = await Promise.all([
+        getTracks({
+          category_id: selectedCategoryId || undefined,
+          difficulty: difficultyFilter || undefined,
+        }),
+        getCategories(),
+      ]);
 
-    if (selectedCategoryId) {
-      query = query.eq('category_id', selectedCategoryId);
+      setTracks(tracksData);
+      setCategories(categoriesData);
+    } catch (error) {
+      console.error('Failed to load data:', error);
+    } finally {
+      setLoading(false);
     }
-
-    if (difficultyFilter) {
-      query = query.eq('difficulty_level', difficultyFilter);
-    }
-
-    const [tracksRes, categoriesRes] = await Promise.all([
-      query,
-      supabase.from('categories').select('*').order('order_index'),
-    ]);
-
-    if (tracksRes.data) setTracks(tracksRes.data);
-    if (categoriesRes.data) setCategories(categoriesRes.data);
-    setLoading(false);
   };
 
   const filteredTracks = tracks.filter((track) =>

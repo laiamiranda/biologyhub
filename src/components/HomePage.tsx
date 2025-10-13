@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { supabase, Category, Track } from '../lib/supabase';
+import { Category, Track, getCategories, getTracks } from '../lib/api';
 import { BookOpen, Clock, TrendingUp, Award } from 'lucide-react';
+import { NavigationProps } from '../types/navigation';
+import RecommendationEngine from './RecommendationEngine';
 
-interface HomePageProps {
-  onNavigate: (view: string, data?: any) => void;
-}
+interface HomePageProps extends NavigationProps {}
 
 export default function HomePage({ onNavigate }: HomePageProps) {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -16,14 +16,19 @@ export default function HomePage({ onNavigate }: HomePageProps) {
   }, []);
 
   const loadData = async () => {
-    const [categoriesRes, tracksRes] = await Promise.all([
-      supabase.from('categories').select('*').order('order_index'),
-      supabase.from('tracks').select('*').limit(6).order('track_number'),
-    ]);
+    try {
+      const [categoriesData, tracksData] = await Promise.all([
+        getCategories(),
+        getTracks(),
+      ]);
 
-    if (categoriesRes.data) setCategories(categoriesRes.data);
-    if (tracksRes.data) setFeaturedTracks(tracksRes.data);
-    setLoading(false);
+      setCategories(categoriesData);
+      setFeaturedTracks(tracksData.slice(0, 6)); // Get first 6 tracks
+    } catch (error) {
+      console.error('Failed to load data:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getDifficultyColor = (level: string) => {
@@ -65,6 +70,24 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                 className="px-8 py-3 bg-white text-teal-600 rounded-lg font-semibold hover:bg-teal-50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
                 Explore All Tracks
+              </button>
+              <button
+                onClick={() => onNavigate('quizzes')}
+                className="px-8 py-3 bg-white/10 backdrop-blur-sm border-2 border-white text-white rounded-lg font-semibold hover:bg-white/20 transition-all"
+              >
+                Take Quizzes
+              </button>
+              <button
+                onClick={() => onNavigate('news')}
+                className="px-8 py-3 bg-white/10 backdrop-blur-sm border-2 border-white text-white rounded-lg font-semibold hover:bg-white/20 transition-all"
+              >
+                Bio News
+              </button>
+              <button
+                onClick={() => onNavigate('glossary')}
+                className="px-8 py-3 bg-white/10 backdrop-blur-sm border-2 border-white text-white rounded-lg font-semibold hover:bg-white/20 transition-all"
+              >
+                Glossary
               </button>
               <button
                 onClick={() => window.scrollTo({ top: 600, behavior: 'smooth' })}
@@ -171,6 +194,18 @@ export default function HomePage({ onNavigate }: HomePageProps) {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* AI Recommendations */}
+        <div className="mt-16">
+          <RecommendationEngine
+            onNavigate={onNavigate}
+            completedItemId="track-1"
+            completedItemType="track"
+            title="Recommended for You"
+            showTitle={true}
+            maxRecommendations={6}
+          />
         </div>
       </section>
     </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { supabase, Track, Lesson, Category } from '../lib/supabase';
+import { Track, Lesson, Category, getLessons, getCategories, getUserProgress } from '../lib/api';
 import { Clock, BookOpen, Play, CheckCircle, Circle } from 'lucide-react';
+import RecommendationEngine from './RecommendationEngine';
 
 interface TrackDetailProps {
   track: Track;
@@ -18,22 +19,23 @@ export default function TrackDetail({ track, onNavigate }: TrackDetailProps) {
   }, [track.id]);
 
   const loadTrackDetails = async () => {
-    const [lessonsRes, categoryRes, progressRes] = await Promise.all([
-      supabase.from('lessons').select('*').eq('track_id', track.id).order('order_index'),
-      supabase.from('categories').select('*').eq('id', track.category_id).maybeSingle(),
-      supabase
-        .from('user_progress')
-        .select('lesson_id')
-        .eq('track_id', track.id)
-        .eq('completed', true),
-    ]);
+    try {
+      const [lessonsData, categoriesData, progressData] = await Promise.all([
+        getLessons(track.id),
+        getCategories().then(cats => cats.find(cat => cat.id === track.category_id) || null),
+        getUserProgress('temp-user'), // For now, use a temp user ID
+      ]);
 
-    if (lessonsRes.data) setLessons(lessonsRes.data);
-    if (categoryRes.data) setCategory(categoryRes.data);
-    if (progressRes.data) {
-      setProgress(new Set(progressRes.data.map((p) => p.lesson_id)));
+      setLessons(lessonsData);
+      setCategory(categoriesData);
+      if (progressData) {
+        setProgress(new Set(progressData.map((p) => p.lesson_id)));
+      }
+    } catch (error) {
+      console.error('Failed to load track details:', error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const getDifficultyColor = (level: string) => {
@@ -178,6 +180,18 @@ export default function TrackDetail({ track, onNavigate }: TrackDetailProps) {
               })}
             </div>
           </div>
+        </div>
+
+        {/* AI Recommendations */}
+        <div className="mt-12">
+          <RecommendationEngine
+            onNavigate={onNavigate}
+            completedItemId={track.id}
+            completedItemType="track"
+            title="Continue Your Learning Journey"
+            showTitle={true}
+            maxRecommendations={4}
+          />
         </div>
       </div>
     </div>

@@ -5,9 +5,11 @@ import TracksPage from './components/TracksPage';
 import TrackDetail from './components/TrackDetail';
 import LessonViewer from './components/LessonViewer';
 import ProgressPage from './components/ProgressPage';
-import { Track, Lesson, Category } from './lib/supabase';
-
-type ViewType = 'home' | 'tracks' | 'category' | 'track' | 'lesson' | 'progress';
+import QuizPage from './components/QuizPage';
+import BioNewsPage from './components/BioNewsPage';
+import GlossaryPage from './components/GlossaryPage';
+import { Track, Lesson, Category } from './lib/api';
+import { ViewType } from './types/navigation';
 
 interface ViewState {
   view: ViewType;
@@ -53,6 +55,12 @@ function App() {
 
       case 'progress':
         return <ProgressPage onNavigate={navigate} />;
+      case 'quizzes':
+        return <QuizPage onNavigate={navigate} />;
+      case 'news':
+        return <BioNewsPage onNavigate={navigate} />;
+      case 'glossary':
+        return <GlossaryPage onNavigate={navigate} />;
 
       default:
         return <HomePage onNavigate={navigate} />;

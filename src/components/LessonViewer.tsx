@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
-import { supabase, Lesson, Track, QuizQuestion } from '../lib/supabase';
-import { Clock, BookOpen, ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
+import { Lesson, Track, QuizQuestion, getQuizQuestions, updateUserProgress } from '../lib/api';
+import { Clock, BookOpen, ChevronLeft, ChevronRight, CheckCircle, Brain, FileText, MessageCircle, Zap } from 'lucide-react';
+import SmartQuizGenerator from './SmartQuizGenerator';
+import AITutorMode from './AITutorMode';
+import AutoSummarizer from './AutoSummarizer';
 
 interface LessonViewerProps {
   lesson: Lesson;
@@ -16,6 +19,8 @@ export default function LessonViewer({ lesson, track, onNavigate }: LessonViewer
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showAIFeatures, setShowAIFeatures] = useState(false);
+  const [activeAIFeature, setActiveAIFeature] = useState<'quiz' | 'tutor' | 'summary' | null>(null);
 
   useEffect(() => {
     loadLessonData();
@@ -24,21 +29,23 @@ export default function LessonViewer({ lesson, track, onNavigate }: LessonViewer
   const loadLessonData = async () => {
     const userId = localStorage.getItem('userId') || generateUserId();
 
-    const [lessonsRes, quizRes, progressRes] = await Promise.all([
-      supabase.from('lessons').select('*').eq('track_id', track.id).order('order_index'),
-      supabase.from('quiz_questions').select('*').eq('lesson_id', lesson.id).order('order_index'),
-      supabase
-        .from('user_progress')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('lesson_id', lesson.id)
-        .maybeSingle(),
-    ]);
+    try {
+      const [lessonsData, quizData, progressData] = await Promise.all([
+        getLessons(track.id),
+        getQuizQuestions(lesson.id),
+        getUserProgress(userId).then(progress => 
+          progress.find(p => p.lesson_id === lesson.id) || null
+        ),
+      ]);
 
-    if (lessonsRes.data) setAllLessons(lessonsRes.data);
-    if (quizRes.data) setQuizQuestions(quizRes.data);
-    if (progressRes.data) setIsCompleted(progressRes.data.completed);
-    setLoading(false);
+      setAllLessons(lessonsData);
+      setQuizQuestions(quizData);
+      if (progressData) setIsCompleted(progressData.completed);
+    } catch (error) {
+      console.error('Failed to load lesson data:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const generateUserId = () => {
@@ -50,18 +57,18 @@ export default function LessonViewer({ lesson, track, onNavigate }: LessonViewer
   const markAsComplete = async () => {
     const userId = localStorage.getItem('userId') || generateUserId();
 
-    await supabase.from('user_progress').upsert(
-      {
+    try {
+      await updateUserProgress({
         user_id: userId,
         track_id: track.id,
         lesson_id: lesson.id,
         completed: true,
         completed_at: new Date().toISOString(),
-      },
-      { onConflict: 'user_id,lesson_id' }
-    );
-
-    setIsCompleted(true);
+      });
+      setIsCompleted(true);
+    } catch (error) {
+      console.error('Failed to mark lesson as complete:', error);
+    }
   };
 
   const handleQuizSubmit = async () => {
@@ -73,19 +80,20 @@ export default function LessonViewer({ lesson, track, onNavigate }: LessonViewer
 
     const userId = localStorage.getItem('userId') || generateUserId();
 
-    await supabase.from('user_progress').upsert(
-      {
+    try {
+      await updateUserProgress({
         user_id: userId,
         track_id: track.id,
         lesson_id: lesson.id,
         completed: true,
-        score: score,
+        quiz_score: score,
         completed_at: new Date().toISOString(),
-      },
-      { onConflict: 'user_id,lesson_id' }
-    );
-
-    setIsCompleted(true);
+      });
+      setIsCompleted(true);
+      setQuizScore(score);
+    } catch (error) {
+      console.error('Failed to submit quiz:', error);
+    }
   };
 
   const currentIndex = allLessons.findIndex((l) => l.id === lesson.id);
@@ -141,6 +149,52 @@ export default function LessonViewer({ lesson, track, onNavigate }: LessonViewer
                 className="text-gray-700 leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: lesson.content }}
               />
+            </div>
+
+            {/* AI Features Section */}
+            <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-xl p-6 mb-8">
+              <div className="flex items-center mb-4">
+                <Zap className="w-6 h-6 text-purple-600 mr-2" />
+                <h3 className="text-xl font-bold text-gray-800">AI-Powered Learning Tools</h3>
+              </div>
+              <p className="text-gray-600 mb-6">
+                Enhance your learning experience with AI-powered tools designed to help you understand and master this lesson.
+              </p>
+              
+              <div className="grid md:grid-cols-3 gap-4">
+                <button
+                  onClick={() => setActiveAIFeature('summary')}
+                  className="p-4 bg-white rounded-lg border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all text-left group"
+                >
+                  <div className="flex items-center mb-2">
+                    <FileText className="w-5 h-5 text-blue-600 mr-2" />
+                    <span className="font-semibold text-gray-800">AI Summary</span>
+                  </div>
+                  <p className="text-sm text-gray-600">Get a quick overview and key takeaways</p>
+                </button>
+
+                <button
+                  onClick={() => setActiveAIFeature('tutor')}
+                  className="p-4 bg-white rounded-lg border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all text-left group"
+                >
+                  <div className="flex items-center mb-2">
+                    <MessageCircle className="w-5 h-5 text-green-600 mr-2" />
+                    <span className="font-semibold text-gray-800">AI Tutor</span>
+                  </div>
+                  <p className="text-sm text-gray-600">Ask questions and get personalized help</p>
+                </button>
+
+                <button
+                  onClick={() => setActiveAIFeature('quiz')}
+                  className="p-4 bg-white rounded-lg border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all text-left group"
+                >
+                  <div className="flex items-center mb-2">
+                    <Brain className="w-5 h-5 text-purple-600 mr-2" />
+                    <span className="font-semibold text-gray-800">Smart Quiz</span>
+                  </div>
+                  <p className="text-sm text-gray-600">AI-generated questions based on this lesson</p>
+                </button>
+              </div>
             </div>
 
             {quizQuestions.length > 0 && !showQuiz && (
@@ -260,6 +314,52 @@ export default function LessonViewer({ lesson, track, onNavigate }: LessonViewer
             </button>
           </div>
         </div>
+
+        {/* AI Feature Modals */}
+        {activeAIFeature === 'summary' && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+              <AutoSummarizer
+                onNavigate={onNavigate}
+                lessonContent={lesson.content}
+                lessonTitle={lesson.title}
+                lessonId={lesson.id}
+                difficulty={track.difficulty_level as 'beginner' | 'intermediate' | 'advanced'}
+                onClose={() => setActiveAIFeature(null)}
+              />
+            </div>
+          </div>
+        )}
+
+        {activeAIFeature === 'tutor' && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+              <AITutorMode
+                onNavigate={onNavigate}
+                lessonContent={lesson.content}
+                lessonTitle={lesson.title}
+                topic={track.title}
+                difficulty={track.difficulty_level as 'beginner' | 'intermediate' | 'advanced'}
+                onClose={() => setActiveAIFeature(null)}
+              />
+            </div>
+          </div>
+        )}
+
+        {activeAIFeature === 'quiz' && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+              <SmartQuizGenerator
+                onNavigate={onNavigate}
+                lessonContent={lesson.content}
+                lessonTitle={lesson.title}
+                topic={track.title}
+                difficulty={track.difficulty_level as 'easy' | 'medium' | 'hard'}
+                onClose={() => setActiveAIFeature(null)}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
