@@ -26,7 +26,7 @@ export const categoriesData = [
   {
     name: 'Immunology & Host Defense',
     description: 'Immune system and disease protection',
-    icon: '🧬',
+    icon: '🛡️',
     order_index: 5,
   },
   {
@@ -38,19 +38,19 @@ export const categoriesData = [
   {
     name: 'Biochemistry & Metabolism',
     description: 'Molecular processes and energy pathways',
-    icon: '🧬',
+    icon: '⚗️',
     order_index: 7,
   },
   {
     name: 'Developmental & Evolutionary Biology',
     description: 'Growth, development, and evolution',
-    icon: '🧬',
+    icon: '🦕',
     order_index: 8,
   },
   {
     name: 'Biotechnology & Modern Biology',
     description: 'Genetic engineering and applied biology',
-    icon: '🧬',
+    icon: '🔬',
     order_index: 9,
   },
   {

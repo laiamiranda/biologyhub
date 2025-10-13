@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, Sparkles, Filter, TrendingUp, Clock, BookOpen, Brain, Zap } from 'lucide-react';
+import { Search, Sparkles, TrendingUp, Clock, BookOpen, Brain, Zap } from 'lucide-react';
 import { aiSearchService, SearchResult, Recommendation } from '../lib/aiSearch';
 import { NavigationProps } from '../types/navigation';
 
@@ -366,7 +366,16 @@ export default function AISearchComponent({
             {recommendations.map((rec) => (
               <div
                 key={rec.id}
-                onClick={() => handleResultClick(rec as SearchResult)}
+                onClick={() => handleResultClick({
+                  id: rec.id,
+                  title: rec.title,
+                  content: rec.reason,
+                  type: rec.type,
+                  category: rec.category || 'general',
+                  relevanceScore: rec.confidence,
+                  difficulty: rec.difficulty,
+                  description: rec.description
+                })}
                 className="p-4 bg-white border border-gray-200 rounded-lg hover:border-purple-300 hover:shadow-md cursor-pointer transition-all"
               >
                 <div className="flex items-center space-x-2 mb-2">

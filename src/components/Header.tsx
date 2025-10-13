@@ -1,16 +1,15 @@
-import { BookOpen, Search } from 'lucide-react';
+import { BookOpen, Search, User, LogIn, Crown } from 'lucide-react';
 import { ViewType } from '../types/navigation';
-import { useState } from 'react';
-import AISearchComponent from './AISearchComponent';
+import { useAuth } from '../contexts/AuthContext';
 
 interface HeaderProps {
-  onSearchChange?: (query: string) => void;
   currentView: string;
-  onNavigate: (view: ViewType) => void;
+  onNavigate: (view: ViewType, data?: any) => void;
+  onShowProfile: () => void;
 }
 
-export default function Header({ onSearchChange, currentView, onNavigate }: HeaderProps) {
-  const [showAISearch, setShowAISearch] = useState(false);
+export default function Header({ currentView, onNavigate, onShowProfile }: HeaderProps) {
+  const { isAuthenticated, user, hasActiveSubscription } = useAuth();
 
   return (
     <>
@@ -81,57 +80,72 @@ export default function Header({ onSearchChange, currentView, onNavigate }: Head
               >
                 Bio News
               </button>
-              <button
-                onClick={() => onNavigate('glossary')}
-                className={`px-4 py-2 rounded-lg transition-all ${
-                  currentView === 'glossary'
-                    ? 'bg-white/20 font-semibold'
-                    : 'hover:bg-white/10'
-                }`}
-              >
-                Glossary
-              </button>
+                  <button
+                    onClick={() => onNavigate('glossary')}
+                    className={`px-4 py-2 rounded-lg transition-all ${
+                      currentView === 'glossary'
+                        ? 'bg-white/20 font-semibold'
+                        : 'hover:bg-white/10'
+                    }`}
+                  >
+                    Glossary
+                  </button>
+                  <button
+                    onClick={() => onNavigate('community')}
+                    className={`px-4 py-2 rounded-lg transition-all ${
+                      currentView === 'community'
+                        ? 'bg-white/20 font-semibold'
+                        : 'hover:bg-white/10'
+                    }`}
+                  >
+                    Community
+                  </button>
             </nav>
 
-            <div className="flex items-center space-x-4">
-              {onSearchChange && (
-                <div className="relative hidden lg:block">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-teal-200" />
-                  <input
-                    type="text"
-                    placeholder="Search tracks or lessons..."
-                    onChange={(e) => onSearchChange(e.target.value)}
-                    className="pl-10 pr-4 py-2 w-64 rounded-lg bg-white/10 border border-white/20 placeholder-teal-200 text-white focus:outline-none focus:ring-2 focus:ring-white/30 backdrop-blur-sm"
-                  />
+                <div className="flex items-center space-x-4">
+
+                  {/* Auth Section */}
+                  {isAuthenticated ? (
+                    <div className="flex items-center space-x-3">
+                      {!hasActiveSubscription && (
+                        <button
+                          onClick={() => onNavigate('pricing')}
+                          className="flex items-center px-3 py-2 bg-yellow-500 hover:bg-yellow-600 rounded-lg transition-colors text-sm font-medium"
+                        >
+                          <Crown className="w-4 h-4 mr-1" />
+                          Upgrade
+                        </button>
+                      )}
+                      <button
+                        onClick={onShowProfile}
+                        className="flex items-center space-x-2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+                      >
+                        <span className="text-lg">{user?.avatar}</span>
+                        <span className="hidden md:block text-sm font-medium">{user?.name}</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center space-x-3">
+                      <button
+                        onClick={() => onNavigate('pricing')}
+                        className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors text-sm font-medium"
+                      >
+                        View Plans
+                      </button>
+                      <button
+                        onClick={() => onNavigate('login')}
+                        className="flex items-center px-4 py-2 bg-white text-teal-600 hover:bg-gray-100 rounded-lg transition-colors text-sm font-medium"
+                      >
+                        <LogIn className="w-4 h-4 mr-2" />
+                        Sign In
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-              <button
-                onClick={() => setShowAISearch(true)}
-                className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all flex items-center space-x-2"
-              >
-                <Search className="w-4 h-4" />
-                <span className="hidden sm:inline">AI Search</span>
-              </button>
-            </div>
           </div>
         </div>
       </header>
 
-      {/* AI Search Modal */}
-      {showAISearch && (
-        <div className="fixed inset-0 bg-black/50 flex items-start justify-center pt-20 z-50">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 max-h-[80vh] overflow-y-auto">
-            <div className="p-6">
-              <AISearchComponent
-                onNavigate={onNavigate}
-                onClose={() => setShowAISearch(false)}
-                placeholder="Search with AI - ask questions, find concepts, explore biology..."
-                showRecommendations={true}
-              />
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }

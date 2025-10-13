@@ -3,9 +3,10 @@ import { Track, Lesson, Category, getLessons, getCategories, getUserProgress } f
 import { Clock, BookOpen, Play, CheckCircle, Circle } from 'lucide-react';
 import RecommendationEngine from './RecommendationEngine';
 
-interface TrackDetailProps {
+import { NavigationProps } from '../types/navigation';
+
+interface TrackDetailProps extends NavigationProps {
   track: Track;
-  onNavigate: (view: string, data?: any) => void;
 }
 
 export default function TrackDetail({ track, onNavigate }: TrackDetailProps) {

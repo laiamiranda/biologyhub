@@ -5,10 +5,11 @@ import SmartQuizGenerator from './SmartQuizGenerator';
 import AITutorMode from './AITutorMode';
 import AutoSummarizer from './AutoSummarizer';
 
-interface LessonViewerProps {
+import { NavigationProps } from '../types/navigation';
+
+interface LessonViewerProps extends NavigationProps {
   lesson: Lesson;
   track: Track;
-  onNavigate: (view: string, data?: any) => void;
 }
 
 export default function LessonViewer({ lesson, track, onNavigate }: LessonViewerProps) {

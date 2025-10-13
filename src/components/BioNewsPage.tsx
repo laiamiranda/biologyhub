@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Calendar, Newspaper, TrendingUp, Globe, Microscope, Dna, Heart, Leaf, Zap, Clock, ExternalLink, BookOpen, Sparkles, ArrowLeft } from 'lucide-react';
+import { Calendar, Newspaper, TrendingUp, Globe, Microscope, Dna, Heart, Leaf, Zap, Clock, ExternalLink, BookOpen, Sparkles, ArrowLeft, Search, Filter, Star, Users, Award, ArrowRight } from 'lucide-react';
 import { NavigationProps } from '../types/navigation';
 
 interface BioNewsPageProps extends NavigationProps {}
@@ -300,9 +300,9 @@ export default function BioNewsPage({ onNavigate }: BioNewsPageProps) {
 
             <div className="mb-6">
               <div className="flex items-center space-x-2 mb-4">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getCategoryColor(selectedArticle.category)}`}>
+                <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-semibold ${getCategoryColor(selectedArticle.category)}`}>
                   {getCategoryIcon(selectedArticle.category)}
-                  <span className="ml-1 capitalize">{selectedArticle.category}</span>
+                  <span className="ml-2 capitalize">{selectedArticle.category}</span>
                 </span>
                 <span className="text-sm text-gray-500">{selectedArticle.source}</span>
                 <span className="text-sm text-gray-500">•</span>
@@ -366,187 +366,306 @@ export default function BioNewsPage({ onNavigate }: BioNewsPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-teal-50">
-      <section className="bg-gradient-to-r from-teal-600 to-cyan-600 text-white py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl font-bold mb-6">Current Events & Bio News</h1>
-            <p className="text-xl text-teal-100 mb-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-teal-50">
+      {/* Modern Hero Section */}
+      <section className="relative bg-gradient-to-r from-teal-600 via-teal-700 to-cyan-700 text-white overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundRepeat: 'repeat'
+          }}></div>
+        </div>
+        
+        <div className="relative container mx-auto px-4 py-16 lg:py-20">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-sm font-medium text-teal-100 mb-6">
+              <Newspaper className="w-4 h-4 mr-2" />
+              Bio News & Events
+            </div>
+            
+            <h1 className="text-4xl lg:text-6xl font-bold mb-6 leading-tight">
+              Current Events & Bio News
+            </h1>
+            
+            <p className="text-xl text-teal-100 mb-8 max-w-3xl mx-auto">
               Stay updated with the latest biology discoveries, research breakthroughs, and scientific news.
-              AI-powered summaries help you understand complex topics quickly.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="container mx-auto px-4 py-12">
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
-            <div className="bg-teal-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-              <Calendar className="w-6 h-6 text-teal-600" />
+      <div className="container mx-auto px-4 py-12 max-w-7xl">
+        {/* Modern Features Section */}
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
+          <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+            <div className="bg-gradient-to-br from-teal-100 to-teal-200 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+              <Calendar className="w-8 h-8 text-teal-600" />
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">Weekly Digest</h3>
-            <p className="text-gray-600">Curated selection of the most important biology news</p>
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">Weekly Digest</h3>
+            <p className="text-gray-600 leading-relaxed">Curated selection of the most important biology news and discoveries from around the world.</p>
           </div>
-          <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
-            <div className="bg-cyan-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-              <Newspaper className="w-6 h-6 text-cyan-600" />
+          <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+            <div className="bg-gradient-to-br from-cyan-100 to-cyan-200 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+              <Newspaper className="w-8 h-8 text-cyan-600" />
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">Biology Blog</h3>
-            <p className="text-gray-600">In-depth analysis and commentary on biological topics</p>
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">Biology Blog</h3>
+            <p className="text-gray-600 leading-relaxed">In-depth analysis and commentary on biological topics by expert researchers and educators.</p>
           </div>
-          <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow">
-            <div className="bg-emerald-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-              <Sparkles className="w-6 h-6 text-emerald-600" />
+          <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+            <div className="bg-gradient-to-br from-emerald-100 to-emerald-200 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+              <Sparkles className="w-8 h-8 text-emerald-600" />
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">AI Summaries</h3>
-            <p className="text-gray-600">Complex research made simple with AI-generated summaries</p>
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">AI Summaries</h3>
+            <p className="text-gray-600 leading-relaxed">Complex research made simple with AI-generated summaries that break down scientific jargon.</p>
           </div>
         </div>
 
-        <div className="mb-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4 md:mb-0">Latest News</h2>
+        {/* Modern Search and Filter Section */}
+        <div className="bg-white rounded-3xl shadow-xl p-8 mb-12 border border-gray-100">
+          <div className="flex flex-col lg:flex-row gap-6">
+            <div className="flex-1 relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search articles, topics, or keywords..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-lg transition-all duration-300 hover:border-gray-300"
+              />
+            </div>
+
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search articles..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-full sm:w-64 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                />
-                <Newspaper className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="pl-12 pr-10 py-4 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent appearance-none bg-white text-lg transition-all duration-300 hover:border-gray-300 min-w-[200px]"
+                >
+                  <option value="all">All Categories</option>
+                  <option value="discovery">Discoveries</option>
+                  <option value="research">Research</option>
+                  <option value="health">Health</option>
+                  <option value="environment">Environment</option>
+                  <option value="technology">Technology</option>
+                  <option value="policy">Policy</option>
+                </select>
               </div>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
-              >
-                <option value="all">All Categories</option>
-                <option value="discovery">Discoveries</option>
-                <option value="research">Research</option>
-                <option value="health">Health</option>
-                <option value="environment">Environment</option>
-                <option value="technology">Technology</option>
-                <option value="policy">Policy</option>
-              </select>
             </div>
           </div>
+        </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredArticles.slice(0, 12).map((article) => (
+        {/* Results Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-800 mb-2">Latest News</h2>
+            <p className="text-gray-600">
+              {searchQuery && `Searching for "${searchQuery}"`}
+              {selectedCategory !== 'all' && ` in ${selectedCategory} category`}
+            </p>
+          </div>
+          <div className="mt-4 sm:mt-0">
+            <div className="flex items-center gap-4 text-sm text-gray-500">
+              <div className="flex items-center">
+                <Newspaper className="w-4 h-4 mr-2" />
+                <span>{filteredArticles.length} articles found</span>
+              </div>
+              <div className="flex items-center">
+                <Star className="w-4 h-4 mr-2" />
+                <span>Expert curated</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Modern Articles Grid */}
+        {filteredArticles.length > 0 ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredArticles.slice(0, 12).map((article, index) => (
               <div
                 key={article.id}
                 onClick={() => {
                   setSelectedArticle(article);
                   setView('article');
                 }}
-                className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all transform hover:-translate-y-1 overflow-hidden cursor-pointer group"
+                className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden cursor-pointer border border-gray-100"
+                style={{ animationDelay: `${index * 100}ms` }}
               >
                 {article.imageUrl && (
-                  <div className="h-48 overflow-hidden">
+                  <div className="h-56 overflow-hidden relative">
                     <img
                       src={article.imageUrl}
                       alt={article.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                    <div className="absolute top-4 left-4 right-4">
+                      <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-semibold backdrop-blur-sm bg-white/90 ${getCategoryColor(article.category)}`}>
+                        {getCategoryIcon(article.category)}
+                        <span className="ml-2 capitalize">{article.category}</span>
+                      </span>
+                    </div>
                   </div>
                 )}
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getCategoryColor(article.category)}`}>
-                      {getCategoryIcon(article.category)}
-                      <span className="ml-1 capitalize">{article.category}</span>
-                    </span>
-                    <span className="text-sm text-gray-500">{article.source}</span>
+                <div className="p-8">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center text-sm text-gray-500">
+                      <Clock className="w-4 h-4 mr-2 text-teal-500" />
+                      <span className="font-medium">{article.readTime} min read</span>
+                    </div>
+                    <div className="flex items-center text-sm text-gray-500">
+                      <Newspaper className="w-4 h-4 mr-2 text-cyan-500" />
+                      <span className="font-medium">{article.source}</span>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-teal-600 transition-colors line-clamp-2">
+                  
+                  <h3 className="text-xl font-bold text-gray-800 mb-4 group-hover:text-teal-600 transition-colors line-clamp-2 leading-tight">
                     {article.title}
                   </h3>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">{article.summary}</p>
-                  <div className="flex items-center justify-between text-sm text-gray-500">
-                    <div className="flex items-center">
-                      <Clock className="w-4 h-4 mr-1" />
-                      <span>{article.readTime} min read</span>
+                  
+                  <p className="text-gray-600 mb-6 line-clamp-3 leading-relaxed">
+                    {article.summary}
+                  </p>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center text-teal-600 font-semibold group-hover:text-teal-700 transition-colors">
+                      <span>Read Article</span>
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                     </div>
-                    <span>{formatDate(article.publishedAt)}</span>
+                    <div className="text-sm text-gray-400">
+                      {formatDate(article.publishedAt)}
+                    </div>
                   </div>
+                  
                   {article.aiSummary && (
-                    <div className="mt-3 flex items-center text-xs text-teal-600">
-                      <Sparkles className="w-3 h-3 mr-1" />
-                      <span>AI Summary Available</span>
+                    <div className="mt-4 flex items-center text-sm text-teal-600 bg-teal-50 px-3 py-2 rounded-lg">
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      <span className="font-medium">AI Summary Available</span>
                     </div>
                   )}
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        ) : (
+          <div className="text-center py-16">
+            <div className="bg-gradient-to-br from-gray-100 to-gray-200 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8">
+              <Search className="w-12 h-12 text-gray-400" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">No articles found</h3>
+            <p className="text-lg text-gray-600 mb-8 max-w-md mx-auto">
+              {searchQuery 
+                ? `No articles match "${searchQuery}". Try adjusting your search terms.`
+                : 'No articles match your current filters. Try changing your search criteria.'
+              }
+            </p>
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedCategory('all');
+              }}
+              className="px-6 py-3 bg-teal-600 text-white rounded-2xl hover:bg-teal-700 transition-colors font-semibold"
+            >
+              Clear Filters
+            </button>
+          </div>
+        )}
 
-        <div className="grid md:grid-cols-2 gap-8">
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-800">Weekly Digests</h3>
+        {/* Modern Weekly Digests and Blog Section */}
+        <div className="grid md:grid-cols-2 gap-12 mt-16">
+          <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center">
+                <div className="bg-gradient-to-br from-teal-100 to-teal-200 w-12 h-12 rounded-2xl flex items-center justify-center mr-4">
+                  <Calendar className="w-6 h-6 text-teal-600" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-800">Weekly Digests</h3>
+                  <p className="text-gray-600">Curated biology news</p>
+                </div>
+              </div>
               <button
                 onClick={() => setView('digest')}
-                className="text-teal-600 font-semibold hover:text-teal-700 transition-colors"
+                className="group flex items-center text-teal-600 font-semibold hover:text-teal-700 transition-colors"
               >
-                View All →
+                <span>View All</span>
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
-            <div className="space-y-4">
-              {weeklyDigests.slice(0, 3).map((digest) => (
+            <div className="space-y-6">
+              {weeklyDigests.slice(0, 3).map((digest, index) => (
                 <div
                   key={digest.id}
-                  className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer"
+                  className="group bg-gradient-to-r from-gray-50 to-white p-6 rounded-2xl border border-gray-200 hover:border-teal-300 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                  style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <h4 className="font-semibold text-gray-800 mb-2">{digest.title}</h4>
-                  <p className="text-sm text-gray-600 mb-3">{digest.description}</p>
-                  <div className="flex items-center justify-between text-sm text-gray-500">
-                    <span>{digest.articles.length} articles</span>
-                    <span>{formatDate(digest.publishedAt)}</span>
+                  <h4 className="text-lg font-bold text-gray-800 mb-3 group-hover:text-teal-600 transition-colors">{digest.title}</h4>
+                  <p className="text-gray-600 mb-4 leading-relaxed">{digest.description}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center text-sm text-gray-500">
+                      <Newspaper className="w-4 h-4 mr-2 text-teal-500" />
+                      <span className="font-medium">{digest.articles.length} articles</span>
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      {formatDate(digest.publishedAt)}
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-800">Biology Blog</h3>
+          <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center">
+                <div className="bg-gradient-to-br from-cyan-100 to-cyan-200 w-12 h-12 rounded-2xl flex items-center justify-center mr-4">
+                  <BookOpen className="w-6 h-6 text-cyan-600" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-800">Biology Blog</h3>
+                  <p className="text-gray-600">Expert insights & analysis</p>
+                </div>
+              </div>
               <button
                 onClick={() => setView('blog')}
-                className="text-teal-600 font-semibold hover:text-teal-700 transition-colors"
+                className="group flex items-center text-cyan-600 font-semibold hover:text-cyan-700 transition-colors"
               >
-                View All →
+                <span>View All</span>
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
-            <div className="space-y-4">
-              {blogPosts.slice(0, 3).map((post) => (
+            <div className="space-y-6">
+              {blogPosts.slice(0, 3).map((post, index) => (
                 <div
                   key={post.id}
-                  className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer"
+                  className="group bg-gradient-to-r from-gray-50 to-white p-6 rounded-2xl border border-gray-200 hover:border-cyan-300 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                  style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-semibold text-gray-800">{post.title}</h4>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-lg font-bold text-gray-800 group-hover:text-cyan-600 transition-colors">{post.title}</h4>
                     {post.featured && (
-                      <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full">
+                      <span className="px-3 py-1 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-700 text-xs rounded-full font-semibold">
                         Featured
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-600 mb-3">{post.excerpt}</p>
-                  <div className="flex items-center justify-between text-sm text-gray-500">
-                    <span>By {post.author}</span>
-                    <span>{post.readTime} min read</span>
+                  <p className="text-gray-600 mb-4 leading-relaxed">{post.excerpt}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center text-sm text-gray-500">
+                      <Users className="w-4 h-4 mr-2 text-cyan-500" />
+                      <span className="font-medium">By {post.author}</span>
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      {post.readTime} min read
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
