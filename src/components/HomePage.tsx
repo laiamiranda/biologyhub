@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Category, Track, getTracks } from '../lib/api';
+import { Category } from '../lib/api';
 import { BookOpen, Clock, TrendingUp, Award, ArrowRight } from 'lucide-react';
 import { NavigationProps } from '../types/navigation';
-import RecommendationEngine from './RecommendationEngine';
+import BiologyHero from './BiologyHero';
 
 interface HomePageProps extends NavigationProps {}
 
 export default function HomePage({ onNavigate }: HomePageProps) {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [featuredTracks, setFeaturedTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Hardcoded categories to match glossary exactly
@@ -101,30 +100,14 @@ export default function HomePage({ onNavigate }: HomePageProps) {
 
   const loadData = async () => {
     try {
-      const tracksData = await getTracks();
-
       // Use hardcoded categories instead of API data
       setCategories(hardcodedCategories);
-      setFeaturedTracks(tracksData.slice(0, 6)); // Get first 6 tracks
     } catch (error) {
       console.error('Failed to load data:', error);
       // Fallback to hardcoded categories even if API fails
       setCategories(hardcodedCategories);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const getDifficultyColor = (level: string) => {
-    switch (level) {
-      case 'beginner':
-        return 'bg-green-100 text-green-700';
-      case 'intermediate':
-        return 'bg-yellow-100 text-yellow-700';
-      case 'advanced':
-        return 'bg-red-100 text-red-700';
-      default:
-        return 'bg-gray-100 text-gray-700';
     }
   };
 
@@ -138,260 +121,352 @@ export default function HomePage({ onNavigate }: HomePageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-teal-50">
-      {/* Modern Hero Section */}
-      <section className="relative bg-gradient-to-br from-teal-600 via-teal-700 to-cyan-700 text-white overflow-hidden">
+      {/* Biology Hero Section */}
+      <section className="relative py-24 bg-gradient-to-br from-slate-50 via-white to-teal-50/30 overflow-hidden">
         {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23059669' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
             backgroundRepeat: 'repeat'
           }}></div>
         </div>
         
-        <div className="relative container mx-auto px-4 py-24 lg:py-32">
-          <div className="max-w-4xl mx-auto text-center">
-            {/* Badge */}
-            <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-sm font-medium text-teal-100 mb-8">
-              <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-              Live Learning Platform
-            </div>
-            
-            {/* Main Heading */}
-            <h1 className="text-5xl lg:text-7xl font-bold mb-8 leading-tight bg-gradient-to-r from-white to-teal-100 bg-clip-text text-transparent">
-              Master Biology
-              <span className="block text-4xl lg:text-5xl text-teal-100 font-light mt-2">
-                from Basics to Advanced
-              </span>
-            </h1>
-            
-            {/* Subtitle */}
-            <p className="text-xl lg:text-2xl text-teal-100 mb-12 leading-relaxed max-w-3xl mx-auto">
-              Dive into <span className="font-semibold text-white">100+ comprehensive tracks</span> covering every aspect of biology. 
-              Interactive lessons, AI-powered quizzes, and real-world applications await.
-            </p>
-            
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-              <button
-                onClick={() => onNavigate('tracks')}
-                className="group px-8 py-4 bg-white text-teal-700 rounded-2xl font-bold text-lg hover:bg-teal-50 transition-all duration-300 shadow-2xl hover:shadow-teal-500/25 transform hover:-translate-y-1 flex items-center"
-              >
-                <BookOpen className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" />
-                Explore All Tracks
-                <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
-              </button>
-              
-              <button
-                onClick={() => window.scrollTo({ top: 600, behavior: 'smooth' })}
-                className="px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white rounded-2xl font-semibold text-lg hover:bg-white/20 hover:border-white/50 transition-all duration-300 flex items-center"
-              >
-                <TrendingUp className="w-5 h-5 mr-3" />
-                Learn More
-              </button>
-            </div>
-            
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">100+</div>
-                <div className="text-teal-200 text-sm">Learning Tracks</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">500+</div>
-                <div className="text-teal-200 text-sm">Lessons</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">10K+</div>
-                <div className="text-teal-200 text-sm">Students</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">4.9★</div>
-                <div className="text-teal-200 text-sm">Rating</div>
-              </div>
-            </div>
-          </div>
+        <BiologyHero 
+          onGetStarted={() => onNavigate('tracks')}
+          onHaveAccount={() => onNavigate('login')}
+        />
+        
+        {/* Decorative Line Separator */}
+        <div className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-teal-500 via-cyan-500 to-teal-500"></div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-20 bg-gradient-to-br from-slate-50 via-white to-teal-50/30 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23059669' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundRepeat: 'repeat'
+          }}></div>
         </div>
         
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white/50 rounded-full mt-2 animate-pulse"></div>
+        <div className="container mx-auto px-4 relative">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            <div className="group text-center">
+              <div className="relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100/50 backdrop-blur-sm">
+                {/* Gradient Background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-cyan-500/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                {/* Icon */}
+                <div className="relative mb-4">
+                  <div className="w-16 h-16 mx-auto bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <BookOpen className="w-8 h-8 text-white" />
+                  </div>
+                </div>
+                
+                {/* Number */}
+                <div className="relative mb-2">
+                  <div className="text-5xl font-black bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">
+                    100+
+                  </div>
+                </div>
+                
+                {/* Label */}
+                <div className="relative">
+                  <div className="text-gray-700 font-semibold text-sm uppercase tracking-wide">
+                    Learning Tracks
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="group text-center">
+              <div className="relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100/50 backdrop-blur-sm">
+                {/* Gradient Background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-blue-500/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                {/* Icon */}
+                <div className="relative mb-4">
+                  <div className="w-16 h-16 mx-auto bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <Clock className="w-8 h-8 text-white" />
+                  </div>
+                </div>
+                
+                {/* Number */}
+                <div className="relative mb-2">
+                  <div className="text-5xl font-black bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">
+                    500+
+                  </div>
+                </div>
+                
+                {/* Label */}
+                <div className="relative">
+                  <div className="text-gray-700 font-semibold text-sm uppercase tracking-wide">
+                    Lessons
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="group text-center">
+              <div className="relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100/50 backdrop-blur-sm">
+                {/* Gradient Background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                {/* Icon */}
+                <div className="relative mb-4">
+                  <div className="w-16 h-16 mx-auto bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <TrendingUp className="w-8 h-8 text-white" />
+                  </div>
+                </div>
+                
+                {/* Number */}
+                <div className="relative mb-2">
+                  <div className="text-5xl font-black bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">
+                    10K+
+                  </div>
+                </div>
+                
+                {/* Label */}
+                <div className="relative">
+                  <div className="text-gray-700 font-semibold text-sm uppercase tracking-wide">
+                    Students
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="group text-center">
+              <div className="relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100/50 backdrop-blur-sm">
+                {/* Gradient Background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-orange-500/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                {/* Icon */}
+                <div className="relative mb-4">
+                  <div className="w-16 h-16 mx-auto bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <Award className="w-8 h-8 text-white" />
+                  </div>
+                </div>
+                
+                {/* Number */}
+                <div className="relative mb-2">
+                  <div className="text-5xl font-black bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">
+                    4.9★
+                  </div>
+                </div>
+                
+                {/* Label */}
+                <div className="relative">
+                  <div className="text-gray-700 font-semibold text-sm uppercase tracking-wide">
+                    Rating
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Modern Features Section */}
-      <section className="relative py-20 bg-gradient-to-b from-slate-50 to-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-800 mb-6">
-              Why Choose <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-cyan-600">BiologyHub</span>?
+      <section className="relative py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-teal-500 via-cyan-500 to-teal-500"></div>
+        <div className="absolute top-20 right-10 w-32 h-32 bg-teal-100 rounded-full opacity-20 blur-3xl"></div>
+        <div className="absolute bottom-20 left-10 w-40 h-40 bg-cyan-100 rounded-full opacity-20 blur-3xl"></div>
+        
+        <div className="container mx-auto px-4 relative">
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-teal-100 to-cyan-100 rounded-full text-teal-700 font-semibold text-sm mb-6">
+              <span className="w-2 h-2 bg-teal-500 rounded-full mr-2 animate-pulse"></span>
+              Why Choose BiologyHub
+            </div>
+            <h2 className="text-5xl lg:text-6xl font-black text-gray-900 mb-6 leading-tight">
+              Built for <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600">Modern Learners</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Experience the future of biology education with cutting-edge features designed for modern learners.
+            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+              Experience biology education reimagined with cutting-edge technology, personalized learning paths, and a community that supports your journey.
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-              <div className="bg-gradient-to-br from-teal-100 to-teal-200 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <BookOpen className="w-8 h-8 text-teal-600" />
+          {/* Features Grid - Different Layout */}
+          <div className="grid lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
+            {/* Left Column - 2 Features */}
+            <div className="space-y-8">
+              <div className="group relative">
+                <div className="flex items-start space-x-6 p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border-l-4 border-teal-500 hover:border-teal-600">
+                  <div className="flex-shrink-0">
+                    <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-300">
+                      <BookOpen className="w-7 h-7 text-white" />
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-teal-600 transition-colors">
+                      Community Support
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed text-lg">
+                      Connect with fellow biology enthusiasts, share knowledge, and get help from a supportive learning community that grows with you.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">100+ Tracks</h3>
-              <p className="text-gray-600 leading-relaxed">Comprehensive courses from cell biology to biotechnology, covering every aspect of life sciences.</p>
+              
+              <div className="group relative">
+                <div className="flex items-start space-x-6 p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border-l-4 border-cyan-500 hover:border-cyan-600">
+                  <div className="flex-shrink-0">
+                    <div className="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-300">
+                      <Clock className="w-7 h-7 text-white" />
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-cyan-600 transition-colors">
+                      Self-Paced Learning
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed text-lg">
+                      Learn at your own speed with flexible scheduling that adapts to your lifestyle, commitments, and learning preferences.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
             
-            <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-              <div className="bg-gradient-to-br from-cyan-100 to-cyan-200 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Clock className="w-8 h-8 text-cyan-600" />
+            {/* Right Column - 2 Features */}
+            <div className="space-y-8">
+              <div className="group relative">
+                <div className="flex items-start space-x-6 p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border-l-4 border-emerald-500 hover:border-emerald-600">
+                  <div className="flex-shrink-0">
+                    <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-300">
+                      <TrendingUp className="w-7 h-7 text-white" />
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-emerald-600 transition-colors">
+                      AI-Powered Insights
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed text-lg">
+                      Smart progress tracking with personalized recommendations and adaptive learning paths that evolve with your understanding.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">Self-Paced</h3>
-              <p className="text-gray-600 leading-relaxed">Learn at your own speed with flexible scheduling that fits your lifestyle and commitments.</p>
+              
+              <div className="group relative">
+                <div className="flex items-start space-x-6 p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border-l-4 border-amber-500 hover:border-amber-600">
+                  <div className="flex-shrink-0">
+                    <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-300">
+                      <Award className="w-7 h-7 text-white" />
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-amber-600 transition-colors">
+                      Interactive Experience
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed text-lg">
+                      Engaging quizzes, 3D models, and hands-on simulations that bring biology concepts to life in ways you've never experienced.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-              <div className="bg-gradient-to-br from-emerald-100 to-emerald-200 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <TrendingUp className="w-8 h-8 text-emerald-600" />
+          </div>
+          
+          {/* Bottom CTA */}
+          <div className="text-center mt-16">
+            <div className="inline-flex items-center space-x-4 px-8 py-4 bg-gradient-to-r from-teal-600 to-cyan-600 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+              <span className="text-white font-bold text-lg">Ready to Start Learning?</span>
+              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <ArrowRight className="w-5 h-5 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">AI-Powered</h3>
-              <p className="text-gray-600 leading-relaxed">Smart progress tracking with personalized recommendations and adaptive learning paths.</p>
-            </div>
-            
-            <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-              <div className="bg-gradient-to-br from-teal-100 to-cyan-200 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Award className="w-8 h-8 text-teal-600" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">Interactive</h3>
-              <p className="text-gray-600 leading-relaxed">Engaging quizzes, 3D models, and hands-on simulations that bring biology to life.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Modern Categories Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-800 mb-6">
-              Explore by <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-cyan-600">Category</span>
+      <section className="relative py-24 bg-gradient-to-br from-white via-slate-50/50 to-teal-50/30 overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-teal-500 via-cyan-500 to-teal-500"></div>
+        <div className="absolute top-20 right-10 w-32 h-32 bg-teal-100 rounded-full opacity-20 blur-3xl"></div>
+        <div className="absolute bottom-20 left-10 w-40 h-40 bg-cyan-100 rounded-full opacity-20 blur-3xl"></div>
+        
+        <div className="container mx-auto px-4 relative">
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-teal-100 to-cyan-100 rounded-full text-teal-700 font-semibold text-sm mb-6">
+              <span className="w-2 h-2 bg-teal-500 rounded-full mr-2 animate-pulse"></span>
+              Discover Your Path
+            </div>
+            <h2 className="text-5xl lg:text-6xl font-black text-gray-900 mb-6 leading-tight">
+              Explore by <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600">Category</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Dive deep into specialized areas of biology with our comprehensive category-based learning paths.
+            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+              Journey through specialized areas of biology with our comprehensive category-based learning paths designed for every level.
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+          {/* Categories Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
             {categories.map((category, index) => (
               <button
                 key={category.id}
                 onClick={() => onNavigate('category', category)}
-                className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-left border border-gray-100 hover:border-teal-200"
-                style={{
-                  animationDelay: `${index * 100}ms`
-                }}
-              >
-                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                  {category.icon}
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-3 group-hover:text-teal-600 transition-colors">
-                  {category.name}
-                </h3>
-                <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
-                  {category.description}
-                </p>
-                <div className="mt-4 flex items-center text-teal-600 text-sm font-medium group-hover:translate-x-1 transition-transform">
-                  Explore →
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Modern Featured Tracks Section */}
-      <section className="py-20 bg-gradient-to-b from-white to-slate-50">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-16">
-            <div>
-              <h2 className="text-4xl lg:text-5xl font-bold text-gray-800 mb-4">
-                Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-cyan-600">Tracks</span>
-              </h2>
-              <p className="text-xl text-gray-600">Hand-picked learning paths to get you started on your biology journey.</p>
-            </div>
-            <button
-              onClick={() => onNavigate('tracks')}
-              className="group px-6 py-3 bg-teal-600 text-white rounded-2xl font-semibold hover:bg-teal-700 transition-all duration-300 flex items-center shadow-lg hover:shadow-teal-500/25"
-            >
-              View All Tracks
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredTracks.map((track, index) => (
-              <div
-                key={track.id}
-                onClick={() => onNavigate('track', track)}
-                className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden cursor-pointer border border-gray-100"
+                className="group relative"
                 style={{
                   animationDelay: `${index * 150}ms`
                 }}
               >
-                <div className="bg-gradient-to-r from-teal-500 via-teal-600 to-cyan-600 h-1"></div>
-                <div className="p-8">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center">
-                      <div className="bg-teal-100 w-10 h-10 rounded-xl flex items-center justify-center mr-3">
-                        <BookOpen className="w-5 h-5 text-teal-600" />
+                {/* Card Container */}
+                <div className="relative bg-white rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-rotate-1 border border-gray-100/50">
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-cyan-500/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  
+                  {/* Content */}
+                  <div className="relative text-center">
+                    {/* Icon Container */}
+                    <div className="relative mb-4">
+                      <div className="w-16 h-16 mx-auto bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-12 transition-all duration-500">
+                        <span className="text-3xl group-hover:scale-110 transition-transform duration-300">
+                          {category.icon}
+                        </span>
                       </div>
-                      <span className="text-sm font-bold text-teal-600">
-                        Track {track.track_number}
-                      </span>
+                      {/* Glow Effect */}
+                      <div className="absolute inset-0 w-16 h-16 mx-auto bg-gradient-to-br from-teal-400/30 to-cyan-400/30 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     </div>
-                    <span
-                      className={`text-xs px-4 py-2 rounded-full font-semibold ${getDifficultyColor(
-                        track.difficulty_level
-                      )}`}
-                    >
-                      {track.difficulty_level}
-                    </span>
-                  </div>
-                  
-                  <h3 className="text-2xl font-bold text-gray-800 mb-4 group-hover:text-teal-600 transition-colors leading-tight">
-                    {track.title}
-                  </h3>
-                  
-                  <p className="text-gray-600 mb-6 line-clamp-3 leading-relaxed">
-                    {track.description}
-                  </p>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center text-gray-500">
-                      <Clock className="w-5 h-5 mr-2 text-teal-500" />
-                      <span className="font-medium">{track.estimated_hours} hours</span>
-                    </div>
-                    <div className="text-teal-600 font-semibold group-hover:translate-x-1 transition-transform">
-                      Start Learning →
+                    
+                    {/* Title */}
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-teal-600 transition-colors duration-300">
+                      {category.name}
+                    </h3>
+                    
+                    {/* Description */}
+                    <p className="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-4">
+                      {category.description}
+                    </p>
+                    
+                    {/* Explore Button */}
+                    <div className="inline-flex items-center px-4 py-2 bg-teal-50 hover:bg-teal-100 border border-teal-200 rounded-full text-teal-700 text-sm font-medium transition-all duration-300 group-hover:translate-y-1">
+                      <span>Explore</span>
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                     </div>
                   </div>
+                  
+                  {/* Corner Accent */}
+                  <div className="absolute top-3 right-3 w-3 h-3 bg-gradient-to-br from-teal-400 to-cyan-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 </div>
-              </div>
+                
+                {/* Floating Particles Effect */}
+                <div className="absolute -top-2 -right-2 w-4 h-4 bg-teal-400/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-ping"></div>
+                <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-cyan-400/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-ping" style={{animationDelay: '0.5s'}}></div>
+              </button>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* AI Recommendations Section */}
-      <section className="py-20 bg-gradient-to-br from-teal-50 to-cyan-50">
-        <div className="container mx-auto px-4">
-          <RecommendationEngine
-            onNavigate={onNavigate}
-            completedItemId="track-1"
-            completedItemType="track"
-            title="Recommended for You"
-            showTitle={true}
-            maxRecommendations={6}
-          />
+          
+          {/* Bottom Decoration */}
+          <div className="text-center mt-16">
+            <div className="inline-flex items-center space-x-2 text-teal-600 text-sm">
+              <div className="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></div>
+              <span>Choose your learning adventure</span>
+              <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+            </div>
+          </div>
         </div>
       </section>
     </div>
