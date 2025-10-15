@@ -96,6 +96,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
 
   useEffect(() => {
     setLoading(false);
+    loadData();
   }, []);
 
   const loadData = async () => {
